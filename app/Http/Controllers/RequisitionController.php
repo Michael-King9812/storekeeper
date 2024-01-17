@@ -11,6 +11,7 @@ use App\Models\Item;
 use App\Models\StockPurchase;
 use App\Models\StoreStock;
 use App\Models\Requisition;
+use App\Models\BarStock;
 
 class RequisitionController extends Controller
 {
@@ -60,6 +61,10 @@ class RequisitionController extends Controller
  
         $updateStoreStock = StoreStock::where('item_id', $request->item)->update([
             'qty'=>$quantity
+        ]);
+
+        $updateBarStock = BarStock::where('item_id', $request->item)->update([
+            'qty'=>$request->quantity
         ]);
 
         if (!$requisit || !$updateStoreStock) {
