@@ -37,7 +37,7 @@
             <div class="col-xl-12">
                 <div class="card custom-card">
                 <div class="card-header">
-                    <div class="card-title">Stock</div>
+                    <div class="card-title">Store Stock</div>
                                                 
                 </div>
                 <div class="card-body">
@@ -51,7 +51,7 @@
                                 <th scope="col">S/N</th>
                                 <th scope="col">Item Type</th>
                                 <th scope="col">Name</th>
-                                <th scope="col">Price</th>
+                                <th scope="col">Quatity</th>
                                 <th scope="col">Date</th>
                                 <!-- <th scope="col">Action</th> -->
                             </tr>
@@ -66,7 +66,7 @@
                                     <td>{{App\Models\ItemType::find(App\Models\Item::find($stock->item_id)->item_type_id)->name}}</td>
                                     <td>{{App\Models\Item::find($stock->item_id)->name}}</td>
                                     <td>{{$stock->qty}}</td>
-                                    <td>{{$stock->updated_at->format('d-m-Y')}}</td>
+                                    <td>{{$stock->updated_at}}</td>
                                     <!-- <td>
                                         <a href="{{route('stock.edit', $stock->id)}}">
                                             <button class="btn btn-sm btn-info btn-wave">

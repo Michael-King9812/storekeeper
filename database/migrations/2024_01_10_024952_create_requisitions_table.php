@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('qty');
             $table->string('from_user_id');
             $table->string('to_user_id');
-            $table->string('issued_at');
             $table->timestamps();
         });
     }

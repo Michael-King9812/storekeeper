@@ -8,6 +8,7 @@ use Carbon;
 
 use App\Models\Item;
 use App\Models\StoreStock;
+use App\Models\BarStock;
 use App\Models\StockPurchase;
 
 class BarStockController extends Controller
@@ -17,7 +18,7 @@ class BarStockController extends Controller
      */
     public function index()
     {
-        return view("bars.manage", ['stocks'=> StoreStock::all(), 'items'=>Item::all()]);
+        return view("barStocks.manage", ['stocks'=> BarStock::all(), 'items'=>Item::all()]);
     }
 
     /**
@@ -62,7 +63,7 @@ class BarStockController extends Controller
      */
     public function edit(string $id)
     {
-        return view("stocks.edit", ['stock'=>StoreStock::find($id),'stocks'=> StoreStock::all(), 'items'=>Item::all()]);
+        //    
     }
 
     /**
@@ -70,19 +71,7 @@ class BarStockController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'quantity'=>'required'
-        ]);
-        
-        $updateItem = StoreStock::find($id)->update([ 
-            'qty'=>$request->quantity,
-            'updated_at'=>\Carbon\Carbon::now()
-        ]);
-
-        if (!$updateItem) {
-            return redirect('/stocks/manage')->with('fail', 'Something went wrong');
-        }
-        return redirect('/stocks/manage')->with('success', 'Stock Updated successfully');
+        //    
     }
 
     /**
@@ -90,23 +79,6 @@ class BarStockController extends Controller
      */
     public function destroy(string $id)
     {       
-        $stock = StoreStock::find($id);
-        $checkStockAssingment = StockPurchase::where('item_type_id', $id)->exists();
-    
-        if ($checkStockAssingment) {
-            return redirect()->back()->with('fail', "Can't delete! Item is attached to the Item type");
-        }
-    
-        if (!$stock) {
-            return redirect()->back()->with('fail', "Stock not found on the table record!");
-        }
-
-        $deleteStock = $stock->delete();
-
-        if (!$deleteStock) {
-            return redirect('/stocks/manage')->with('fail', 'Something went wrong');
-        }
-
-        return redirect('/stocks/manage')->with('success', 'Stock Deleted successfully');
+        // 
     }
 }

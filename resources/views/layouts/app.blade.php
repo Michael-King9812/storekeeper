@@ -381,9 +381,9 @@
                     />
                   </div>
                   <div class="d-sm-block d-none">
-                    <p class="fw-semibold mb-0 lh-1">Json Taylor</p>
+                    <p class="fw-semibold mb-0 lh-1">Admin</p>
                     <span class="op-7 fw-normal d-block fs-11"
-                      >Web Designer</span
+                      >Manager</span
                     >
                   </div>
                 </div>
@@ -600,6 +600,26 @@
                   </li>
                   <li class="slide">
                     <a href="{{ route('barStock.manage') }}" class="side-menu__item">Manage Stock Purchase</a>
+                  </li>               
+                </ul>
+              </li>
+              <!-- End::slide -->
+              
+              <!-- Start::slide -->
+              <li class="slide has-sub">
+                <a href="javascript:void(0);" class="side-menu__item">
+                  <i class="bx bx-store-alt side-menu__icon"></i>
+                  <span class="side-menu__label"
+                    >Requisitions</span
+                  >
+                  <i class="fe fe-chevron-right side-menu__angle"></i>
+                </a>
+                <ul class="slide-menu child1">
+                  <li class="slide side-menu__label1">
+                    <a href="javascript:void(0)">Requisitions</a>
+                  </li>
+                  <li class="slide">
+                    <a href="{{ route('requisition.manage') }}" class="side-menu__item">Manage Requisitions</a>
                   </li>               
                 </ul>
               </li>
