@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Item;
 use App\Models\StoreStock;
+use App\Models\StockPurchase;
 
 class StoreStockController extends Controller
 {
@@ -88,6 +89,11 @@ class StoreStockController extends Controller
     public function destroy(string $id)
     {       
         $stock = StoreStock::find($id);
+        $checkStockAssingment = StockPurchase::where('item_type_id', $id)->exists();
+    
+        if ($checkStockAssingment) {
+            return redirect()->back()->with('fail', "Can't delete! Item is attached to the Item type");
+        }
     
         if (!$stock) {
             return redirect()->back()->with('fail', "Stock not found on the table record!");

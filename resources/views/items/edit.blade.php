@@ -7,11 +7,7 @@
             <!-- Page Header -->
             <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
                 <h1 class="page-title fw-semibold fs-18 mb-0">Update Item</h1>
-                <div class="ms-md-1 ms-0">
-                    <nav>
-                        <a class="modal-effect btn btn-primary d-grid mb-3" style="font-weight: bold;" data-bs-effect="effect-scale" data-bs-toggle="modal" href="#modaldemo8">Add</a>
-                    </nav>
-                </div>
+              
             </div> <!-- Page Header Close -->
             
             @if(Session::has('success'))

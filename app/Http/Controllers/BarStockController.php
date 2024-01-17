@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Carbon;
 
 use App\Models\Item;
+use App\Models\StoreStock;
+use App\Models\StockPurchase;
 
 class BarStockController extends Controller
 {
@@ -15,7 +17,7 @@ class BarStockController extends Controller
      */
     public function index()
     {
-        return view("items.manage", ['items'=> Item::all(), 'itemTypes'=>ItemType::all()]);
+        return view("bars.manage", ['stocks'=> StoreStock::all(), 'items'=>Item::all()]);
     }
 
     /**
@@ -32,23 +34,19 @@ class BarStockController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'itemType'=>'required',
             'item'=>'required',
-            'price'=>'required'
+            'quantity'=>'required'
         ]);
         
-        $item = Item::create([
+        $item = StoreStock::create([
             'item_id'=>$request->item,
-            'user_id'=>auth()->user()->id,
-            'requisition_qty'=>$request->requisitionQty,
-            'opening_stock_qty'=>$request->openingStockQty,
-            'closing_stock'=>$request->closingStockQty,
+            'qty'=>$request->quantity
         ]);
 
         if (!$item) {
             return redirect()->back()->with('fail', 'Something went wrong');
         }
-        return redirect()->back()->with('success', 'Item created successfully');
+        return redirect()->back()->with('success', 'Stock Added successfully');
     }
 
     /**
@@ -64,8 +62,7 @@ class BarStockController extends Controller
      */
     public function edit(string $id)
     {
-        return view("items.edit", [
-            'item'=> Item::find($id), 'items'=>Item::all(), 'itemTypes'=>ItemType::all()]);
+        return view("stocks.edit", ['stock'=>StoreStock::find($id),'stocks'=> StoreStock::all(), 'items'=>Item::all()]);
     }
 
     /**
@@ -74,22 +71,18 @@ class BarStockController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'itemType'=>'required',
-            'item'=>'required',
-            'price'=>'required'
+            'quantity'=>'required'
         ]);
         
-        $updateItem = Item::find($id)->update([ 
-            'item_type_id'=>$request->itemType,
-            'name'=>$request->item,
-            'price'=>$request->price,
+        $updateItem = StoreStock::find($id)->update([ 
+            'qty'=>$request->quantity,
             'updated_at'=>\Carbon\Carbon::now()
         ]);
 
         if (!$updateItem) {
-            return redirect('/items/manage')->with('fail', 'Something went wrong');
+            return redirect('/stocks/manage')->with('fail', 'Something went wrong');
         }
-        return redirect('/items/manage')->with('success', 'Item Updated successfully');
+        return redirect('/stocks/manage')->with('success', 'Stock Updated successfully');
     }
 
     /**
@@ -97,18 +90,23 @@ class BarStockController extends Controller
      */
     public function destroy(string $id)
     {       
-        $item = Item::find($id);
+        $stock = StoreStock::find($id);
+        $checkStockAssingment = StockPurchase::where('item_type_id', $id)->exists();
     
-        if (!$item) {
-            return redirect()->back()->with('fail', "Item not found on the table record!");
+        if ($checkStockAssingment) {
+            return redirect()->back()->with('fail', "Can't delete! Item is attached to the Item type");
+        }
+    
+        if (!$stock) {
+            return redirect()->back()->with('fail', "Stock not found on the table record!");
         }
 
-        $deleteItem = $item->delete();
+        $deleteStock = $stock->delete();
 
-        if (!$deleteItem) {
-            return redirect('/items/manage')->with('fail', 'Something went wrong');
+        if (!$deleteStock) {
+            return redirect('/stocks/manage')->with('fail', 'Something went wrong');
         }
 
-        return redirect('/items/manage')->with('success', 'Item Deleted successfully');
+        return redirect('/stocks/manage')->with('success', 'Stock Deleted successfully');
     }
 }

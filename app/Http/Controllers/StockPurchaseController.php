@@ -53,7 +53,6 @@ class StockPurchaseController extends Controller
         $storeStock = StoreStock::where('id', $request->item)->first();
         $quantity = $storeStock->qty + $request->quantity;
  
-
         $updateStoreStock = StoreStock::where('item_id', $request->item)->update([
             'qty'=>$quantity
         ]);
@@ -78,8 +77,7 @@ class StockPurchaseController extends Controller
      */
     public function edit(string $id)
     {
-        return view("stockPurchase.edit", [
-            'item'=> Item::find($id), 'items'=>Item::all(), 'itemTypes'=>ItemType::all()]);
+        return view("stockPurchase.edit", ['stockPurchase'=>StockPurchase::find($id), 'stockPurchases'=> StockPurchase::all(), 'items'=>Item::all(), 'itemTypes'=>ItemType::all()]);
     }
 
     /**
@@ -87,23 +85,7 @@ class StockPurchaseController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'itemType'=>'required',
-            'item'=>'required',
-            'price'=>'required'
-        ]);
-        
-        $updateItem = Item::find($id)->update([ 
-            'item_type_id'=>$request->itemType,
-            'name'=>$request->item,
-            'price'=>$request->price,
-            'updated_at'=>\Carbon\Carbon::now()
-        ]);
-
-        if (!$updateItem) {
-            return redirect('/items/manage')->with('fail', 'Something went wrong');
-        }
-        return redirect('/items/manage')->with('success', 'Item Updated successfully');
+        // 
     }
 
     /**
@@ -117,7 +99,17 @@ class StockPurchaseController extends Controller
             return redirect()->back()->with('fail', "Stock Item not found on the table record!");
         }
 
+        $storeStock = StoreStock::where('id', $stockPurchase->item_id)->first();
+        $quantity = $storeStock->qty - $stockPurchase->qty;
+
         $deleteStockPurchase = $stockPurchase->delete();
+
+        if ($deleteStockPurchase) {
+            StoreStock::where('item_id', $stockPurchase->item_id)->update([
+                'qty'=>$quantity
+            ]);
+        }
+        
 
         if (!$deleteStockPurchase) {
             return redirect('/stock/purchase/manage')->with('fail', 'Something went wrong');

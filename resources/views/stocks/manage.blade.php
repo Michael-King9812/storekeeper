@@ -6,11 +6,11 @@
         <div class="container-fluid">
             <!-- Page Header -->
             <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
-                <h1 class="page-title fw-semibold fs-18 mb-0">Create Stock</h1>
+                <h1 class="page-title fw-semibold fs-18 mb-0">Manage Store Stock</h1>
                 <div class="ms-md-1 ms-0">
-                    <nav>
+                    <!-- <nav>
                         <a class="modal-effect btn btn-primary d-grid mb-3" style="font-weight: bold;" data-bs-effect="effect-scale" data-bs-toggle="modal" href="#modaldemo8">Add</a>
-                    </nav>
+                    </nav> -->
                 </div>
             </div> <!-- Page Header Close -->
             
@@ -53,7 +53,7 @@
                                 <th scope="col">Name</th>
                                 <th scope="col">Price</th>
                                 <th scope="col">Date</th>
-                                <th scope="col">Action</th>
+                                <!-- <th scope="col">Action</th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -66,8 +66,8 @@
                                     <td>{{App\Models\ItemType::find(App\Models\Item::find($stock->item_id)->item_type_id)->name}}</td>
                                     <td>{{App\Models\Item::find($stock->item_id)->name}}</td>
                                     <td>{{$stock->qty}}</td>
-                                    <td>{{$stock->created_at->format('d-m-Y')}}</td>
-                                    <td>
+                                    <td>{{$stock->updated_at->format('d-m-Y')}}</td>
+                                    <!-- <td>
                                         <a href="{{route('stock.edit', $stock->id)}}">
                                             <button class="btn btn-sm btn-info btn-wave">
                                                 <i class="ri-edit-line align-middle me-2 d-inline-block"></i>
@@ -80,7 +80,7 @@
                                                 Delete
                                             </button>
                                         </a>
-                                    </td>
+                                    </td> -->
                                 </tr>
                             @endforeach
                         </tbody>
@@ -90,7 +90,7 @@
             </div>
             <!-- End:: row-4 -->
 
-            <div class="modal fade"  id="modaldemo8">
+            <!-- <div class="modal fade"  id="modaldemo8">
                 <div class="modal-dialog modal-dialog-centered text-center" role="document">
                     <div class="modal-content modal-content-demo">
                         <form action="{{route('stock.store')}}" method="post">
@@ -127,7 +127,7 @@
                         </form>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
         </div>
     </div> <!-- End::app-content -->

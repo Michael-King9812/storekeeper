@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemTypeController;
+use App\Http\Controllers\BarStockController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\StoreStockController;
 use App\Http\Controllers\StockPurchaseController;
@@ -56,11 +57,11 @@ Route::middleware(['manager'])->group(function() {
         Route::post('/store', 'store')->name('stockPurchase.store');
         Route::get('/delete/{id}', 'destroy')->name('stockPurchase.delete');
         Route::put('/update/{id}', 'update')->name('stockPurchase.update');
-    });
-
-    // Stocks Routing
-    Route::controller()->prefix('/stock')->group(function() {
-
+    });    
+    Route::controller(BarStockController::class)->prefix('/bar/stocks')->group(function() {
+        Route::get('/manage', 'index')->name('barStock.manage');
+        Route::post('/store', 'store')->name('barStock.store');
+        Route::get('/delete/{id}', 'destroy')->name('barStock.delete');
     });
     
     
