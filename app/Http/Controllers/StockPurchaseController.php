@@ -34,21 +34,21 @@ class StockPurchaseController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'item_id' => 'required',
+            'item' => 'required',
             'price' => 'required',
             'quantity' => 'required',
             'purchaser' => 'required'
         ]);
-dd($request);
+        
         // Create the Stock Purchase
         $stockPurchase = StockPurchase::create([
-            'item' => $request->item,
+            'item_id' => $request->item,
             'price' => $request->price,
             'qty' => $request->quantity,
             'purchased_by' => $request->purchaser,
         ]);
 
-        if (!$item) {
+        if (!$stockPurchase) {
             return redirect()->back()->with('fail', 'Something went wrong');
         }
 
@@ -101,18 +101,18 @@ dd($request);
      */
     public function destroy(string $id)
     {       
-        $item = Item::find($id);
+        $stockPurchase = StockPurchase::find($id);
     
-        if (!$item) {
-            return redirect()->back()->with('fail', "Item not found on the table record!");
+        if (!$stockPurchase) {
+            return redirect()->back()->with('fail', "Stock Item not found on the table record!");
         }
 
-        $deleteItem = $item->delete();
+        $deleteStockPurchase = $stockPurchase->delete();
 
-        if (!$deleteItem) {
-            return redirect('/items/manage')->with('fail', 'Something went wrong');
+        if (!$deleteStockPurchase) {
+            return redirect('/stock/purchase/manage')->with('fail', 'Something went wrong');
         }
 
-        return redirect('/items/manage')->with('success', 'Item Deleted successfully');
+        return redirect('/stock/purchase/manage')->with('success', 'Stock Item Deleted successfully');
     }
 }

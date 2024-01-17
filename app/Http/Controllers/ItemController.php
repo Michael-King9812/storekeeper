@@ -10,6 +10,9 @@ use App\Models\ItemType;
 use App\Models\Item;
 use App\Models\BarStock;
 use App\Models\StoreStock;
+use App\Models\StockPurchase;
+use App\Models\Sale;
+use App\Models\Requisition;
 
 class ItemController extends Controller
 {
@@ -114,6 +117,21 @@ class ItemController extends Controller
     public function destroy(string $id)
     {       
         $item = Item::find($id);
+        $checkIfItemAssignedToStoreStock = StoreStock::where('item_id', $id)->exists();
+        $checkIfItemAssignedToStockPurchase = StockPurchase::where('item_id', $id)->exists();
+        $checkIfItemAssignedToSales = Sale::where('item_id', $id)->exists();
+        $checkIfItemAssignedToRequisition = Requisition::where('item_id', $id)->exists();
+        $checkIfItemAssignedToBarStock = BarSTock::where('item_id', $id)->exists();
+      
+    
+        if ($checkIfItemAssignedToStoreStock || $checkIfItemAssignedToStockPurchase || $checkIfItemAssignedToSales || $checkIfItemAssignedToRequisition || $checkIfItemAssignedToBarStock) {
+            return redirect()->back()->with('fail', "Can't delete Item! Item is attached to an object.");
+        }
+
+        if (!$itemType) {
+            return redirect()->back()->with('fail', "Item not found on the table record!");
+        }
+
     
         if (!$item) {
             return redirect()->back()->with('fail', "Item not found on the table record!");
