@@ -571,7 +571,7 @@
                 <a href="javascript:void(0);" class="side-menu__item">
                   <i class="bx bx-store-alt side-menu__icon"></i>
                   <span class="side-menu__label"
-                    >Stock Puchase</span
+                    >Stock Purchase</span
                   >
                   <i class="fe fe-chevron-right side-menu__angle"></i>
                 </a>
