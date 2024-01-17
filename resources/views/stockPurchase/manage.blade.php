@@ -65,7 +65,7 @@
                             @foreach($stockPurchase as $stockPurchase)
                                 <tr>
                                     <td>{{ $counter++ }}</td>
-                                    
+                                    <td>{{App\Models\Item::where('id', $stockPurchase->item_id)->first()->name}}</td>
                                     <td>{{$stockPurchase->price}}</td>
                                     <td>{{$stockPurchase->qty}}</td>
                                     <td>{{$stockPurchase->purchased_by}}</td>

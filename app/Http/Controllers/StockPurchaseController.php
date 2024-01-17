@@ -9,6 +9,7 @@ use Carbon;
 use App\Models\ItemType;
 use App\Models\Item;
 use App\Models\StockPurchase;
+use App\Models\StoreStock;
 
 class StockPurchaseController extends Controller
 {
@@ -47,8 +48,17 @@ class StockPurchaseController extends Controller
             'qty' => $request->quantity,
             'purchased_by' => $request->purchaser,
         ]);
+        
 
-        if (!$stockPurchase) {
+        $storeStock = StoreStock::where('id', $request->item)->first();
+        $quantity = $storeStock->qty + $request->quantity;
+ 
+
+        $updateStoreStock = StoreStock::where('item_id', $request->item)->update([
+            'qty'=>$quantity
+        ]);
+
+        if (!$stockPurchase || !$updateStoreStock) {
             return redirect()->back()->with('fail', 'Something went wrong');
         }
 
