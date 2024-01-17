@@ -106,6 +106,27 @@
                                         </a>
                                     </td>
                                 </tr>
+
+
+                                <!-- Delete Modal Card -->
+                                <div class="card-body">
+                                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h6 class="modal-title" id="exampleModalLabel1">Modal title</h6> <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body"> Are you sure you want to delete Item Type? </div>
+                                                <div class="modal-footer">
+                                                    <a href="{{route('itemType.delete', [$itemType->id])}}">
+                                                        <button type="button" class="btn btn-primary">Delete</button> 
+                                                    </a>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             @endforeach
                         </tbody>
                     </table>
@@ -113,28 +134,6 @@
             </div>
             </div>
             <!-- End:: row-4 -->
-
-
-            <!-- Delete Modal Card -->
-            <div class="card-body">
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h6 class="modal-title" id="exampleModalLabel1">Modal title</h6> <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body"> Are you sure you want to delete Item Type? </div>
-                            <div class="modal-footer">
-                                <a href="{{route('itemType.delete', [$itemType->id])}}">
-                                    <button type="button" class="btn btn-primary">Delete</button> 
-                                </a>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
 
         </div>
     </div> <!-- End::app-content -->
