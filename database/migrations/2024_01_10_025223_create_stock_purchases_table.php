@@ -13,10 +13,8 @@ return new class extends Migration
     {
         Schema::create('stock_purchases', function (Blueprint $table) {
             $table->id();
-            $table->string('item_id');
-            $table->string('qty');
-            $table->integer('price');
-            $table->string('purchased_by');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->json('purchases');
             $table->timestamps();
         });
     }

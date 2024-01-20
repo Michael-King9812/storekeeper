@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('bar_stock_archives', function (Blueprint $table) {
             $table->id();
-            $table->string('user_id');
-            $table->string('opening_stock_qty');
-            $table->string('closing_stock_qty');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->integer('opening_stock_qty');
+            $table->integer('requisitions')->default(0);
+            $table->integer('closing_stock_qty')->nullable();
             $table->timestamps();
         });
     }

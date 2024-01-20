@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('daily_sale_summaries', function (Blueprint $table) {
             $table->id();
             $table->string('user_id');
-            $table->string('total_amount_due');
-            $table->string('total_amount_paid');
-            $table->string('cash')->default('0');
-            $table->string('credit')->default('0');
+            $table->decimal('total_amount_due', 15, 2);
+            $table->decimal('total_amount_paid', 15, 2);
+            $table->decimal('cash', 15, 2)->default('0');
+            $table->decimal('credit', 15, 2)->default('0');
             $table->string('pos')->default('0');
             $table->decimal('shortage_amount', 15, 0)->default('0');
             $table->timestamps();

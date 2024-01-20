@@ -1,15 +1,9 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ItemController;
-use App\Http\Controllers\ItemTypeController;
-use App\Http\Controllers\BarStockController;
-use App\Http\Controllers\StockController;
-use App\Http\Controllers\StoreStockController;
-use App\Http\Controllers\StockPurchaseController;
-use App\Http\Controllers\RequisitionController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -25,53 +19,23 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Auth::routes();
 
-Route::middleware(['manager'])->group(function() {
-    Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
+Route::middleware('auth')->group(function () {
 
-    // Items Routing
-    Route::controller(ItemTypeController::class)->prefix('/item_type')->name('itemType.')->group(function() {
-        Route::get('/manage', 'index')->name('manage');
-        Route::get('/edit/{id}', 'edit')->name('edit');
-        Route::get('/delete/{id}', 'destroy')->name('delete');
-        Route::post('/store', 'store')->name('store');
-        Route::put('/update/{id}', 'update')->name('update');
+    Route::get('/dashboard', function () {
+        return view('dashboard', [
+            'page' => 'dashboard'
+        ]);
+    })->name('dashboard');
+
+    Route::controller(ItemController::class)->prefix('/items')->name('items.')->group(function() {
+        Route::get('', 'index')->name('all');
+        Route::post('/store', 'store')->name('store')->middleware('has.privilege:canAddItem');
+        Route::post('/delete', 'destroy')->name('delete')->middleware('has.privilege:canRemoveItem');
+        Route::put('/update', 'update')->name('update')->middleware('has.privilege:canAddItem');
     });
-    Route::controller(ItemController::class)->prefix('/items')->name('item.')->group(function() {
-        Route::get('/manage', 'index')->name('manage');
-        Route::get('/edit/{id}', 'edit')->name('edit');
-        Route::post('/store', 'store')->name('store');
-        Route::get('/delete/{id}', 'destroy')->name('delete');
-        Route::put('/update/{id}', 'update')->name('update');
-    });
-    Route::controller(StoreStockController::class)->prefix('/stocks')->name('stock.')->group(function() {
-        Route::get('/manage', 'index')->name('manage');
-        Route::get('/edit/{id}', 'edit')->name('edit');
-        Route::post('/store', 'store')->name('store');
-        Route::get('/delete/{id}', 'destroy')->name('delete');
-        Route::put('/update/{id}', 'update')->name('update');
-    });
-    Route::controller(StockPurchaseController::class)->prefix('/stock/purchase')->name('stockPurchase.')->group(function() {
-        Route::get('/manage', 'index')->name('manage');
-        Route::get('/edit/{id}', 'edit')->name('edit');
-        Route::post('/store', 'store')->name('store');
-        Route::get('/delete/{id}', 'destroy')->name('delete');
-        Route::put('/update/{id}', 'update')->name('update');
-    });    
-    Route::controller(BarStockController::class)->prefix('/bar/stocks')->name('barStock.')->group(function() {
-        Route::get('/manage', 'index')->name('manage');
-        Route::post('/store', 'store')->name('store');
-        Route::get('/delete/{id}', 'destroy')->name('delete');
-    });
-    Route::controller(RequisitionController::class)->prefix('/requisition')->name('requisition.')->group(function() {
-        Route::get('/manage', 'index')->name('manage');
-        Route::get('/edit/{id}', 'edit')->name('edit');
-        Route::post('/store', 'store')->name('store');
-        Route::get('/delete/{id}', 'destroy')->name('delete');
-        Route::put('/update/{id}', 'update')->name('update');
-    });  
-    
-    
+
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+require __DIR__.'/auth.php';

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -42,4 +43,31 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function firstName(): string
+    {
+        return explode(' ', $this->name)[0];
+    }
+
+    public function role(): string 
+    {
+        return DB::table('roles')->whereId($this->role_id)->first('name')->name;
+    }
+
+    public function privileges(): array
+    {
+        $privileges = Privilege::all();
+        $userPrivileges = json_decode(DB::table('user_privileges')->where('id', $this->id)->first('privileges')->privileges, true);
+        $userPrivilegesDesc = [];
+        
+        foreach($userPrivileges as $privilegeId){
+            $userPrivilegesDesc[] = $privileges[$privilegeId - 1]->name;
+        }
+        return $userPrivilegesDesc;
+    }
+
+    public function hasRightTo(string $privilege): bool
+    {
+        return in_array('can' . ucfirst($privilege), $this->privileges());
+    }
 }

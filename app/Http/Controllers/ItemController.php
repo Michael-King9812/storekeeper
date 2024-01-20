@@ -21,117 +21,87 @@ class ItemController extends Controller
      */
     public function index()
     {
-        return view("items.manage", ['items'=> Item::all(), 'itemTypes'=>ItemType::all()]);
+        return view("items.manage", [
+            'page' => 'manageItems',
+            'items'=> Item::all(), 
+            'itemTypes'=>ItemType::all()
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        // 
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $request->validate([
-            'itemType' => 'required',
-            'item' => 'required',
-            'price' => 'required'
+        $validated = $request->validate([
+            'typeId' => 'required|exists:item_types,id',
+            'name' => 'required|string|unique:items,name',
+            'price' => 'required|numeric'
         ]);
 
         // Create the item
         $item = Item::create([
-            'name' => $request->item,
-            'item_type_id' => $request->itemType,
-            'price' => $request->price
+            'name' => ucwords($validated['name']),
+            'item_type_id' => $validated['typeId'],
+            'price' => $validated['price']
         ]);
-
-        // Get the ID of the created item
-        $itemId = $item->id;
 
         // Create the store stock record with the item ID
         $stockStore = StoreStock::create([
-            'item_id' => $itemId,
+            'item_id' => $item->id,
+            'qty' => 0
         ]);
 
         // Create the bar stock record with the item ID
         $barStore = BarStock::create([
-            'item_id' => $itemId,
+            'item_id' => $item->id,
+            'qty' => 0
         ]);
 
         if (!$item || !$stockStore || !$barStore) {
-            return redirect()->back()->with('fail', 'Something went wrong');
+            return redirect()->back()->with(['alert' => 'danger', 'msg' => 'Something went wrong']);
         }
 
-        return redirect()->back()->with('success', 'Item created successfully');
+        return redirect()->back()->with(['alert' => 'success', 'msg' => 'New Item ( ' . $item->name . ' ) was successfully created ']);
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+   
+    public function update(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        return view("items.edit", [
-            'item'=> Item::find($id), 'items'=>Item::all(), 'itemTypes'=>ItemType::all()]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        $request->validate([
-            'itemType'=>'required',
-            'item'=>'required',
-            'price'=>'required'
+        $validated = $request->validate([
+            'id' => 'required|exists:items,id',
+            'typeId' => 'required|exists:item_types,id',
+            'name' => 'required|string|unique:items,name',
+            'price' => 'required|numeric'
         ]);
+
+        try {
+
+            $item = Item::find($request->typeId);
+
+            $item->update([ 
+                'item_type_id'=>$validated['typeId'],
+                'name'=> ucwords($validated['name']),
+                'price'=> $validated['price']
+            ]);
+
+            return redirect()->back()->with(['alert' => 'success', 'msg' => 'Item ( ' . $item->name . ') Updated successfully']);
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with(['alert' => 'danger', 'msg' => 'Something went wrong ...' . $e->getMessage()]);
+        }
         
-        $updateItem = Item::find($id)->update([ 
-            'item_type_id'=>$request->itemType,
-            'name'=>$request->item,
-            'price'=>$request->price,
-            'updated_at'=>\Carbon\Carbon::now()
-        ]);
-
-        if (!$updateItem) {
-            return redirect('/items/manage')->with('fail', 'Something went wrong');
-        }
-        return redirect('/items/manage')->with('success', 'Item Updated successfully');
+       
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {       
-        $item = Item::find($id);
-        $checkIfItemAssignedToStoreStock = StoreStock::where('item_id', $id)->exists();
-        $checkIfItemAssignedToStockPurchase = StockPurchase::where('item_id', $id)->exists();
-        $checkIfItemAssignedToSales = Sale::where('item_id', $id)->exists();
-        $checkIfItemAssignedToRequisition = Requisition::where('item_id', $id)->exists();
-        $checkIfItemAssignedToBarStock = BarSTock::where('item_id', $id)->exists();
-      
+        $item = Item::findOrFail($request->id);
+
+        $itemAssignedToStoreStock = StoreStock::where('item_id', $item->id)->where('qty', '>', 0)->exists();
+        $itemAssignedToBarStock = BarSTock::where('item_id', $item->id)->where('qty', '>', 0)->exists();
+        $itemAssignedToSales = Sale::where('item_id', $item->id)->exists();
+        $itemAssignedToRequisitions = Requisition::where('item_id', $item->id)->exists();
     
-        if ($checkIfItemAssignedToStoreStock || $checkIfItemAssignedToStockPurchase || $checkIfItemAssignedToSales || $checkIfItemAssignedToRequisition || $checkIfItemAssignedToBarStock) {
-            return redirect()->back()->with('fail', "Can't delete Item! Item is attached to an object.");
+        if ($itemAssignedToStoreStock || $itemAssignedToSales || $itemAssignedToRequisitions || $itemAssignedToBarStock) {
+            return redirect()->back()->with(['alert' => 'danger', 'msg' => 'Item could not be deleted. Item is attached to an object.']);
         }
-
-        if (!$itemType) {
-            return redirect()->back()->with('fail', "Item not found on the table record!");
-        }
-
     
         if (!$item) {
             return redirect()->back()->with('fail', "Item not found on the table record!");
@@ -140,9 +110,9 @@ class ItemController extends Controller
         $deleteItem = $item->delete();
 
         if (!$deleteItem) {
-            return redirect('/items/manage')->with('fail', 'Something went wrong');
+            return redirect()->back()->with(['alert' => 'danger', 'msg' => 'Something went wrong']);
         }
 
-        return redirect('/items/manage')->with('success', 'Item Deleted successfully');
+        return redirect()->back()->with(['alert' => 'success', 'msg' => 'New Item ( ' . $item->name . ' ) was successfully deleted ']);
     }
 }

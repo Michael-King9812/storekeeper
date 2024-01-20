@@ -32,7 +32,7 @@
                 <div class="my-5 d-flex justify-content-center"> 
                     <a href="index.html"> 
                         <!-- <img src="{{asset('assets/images/brand-logos/desktop-logo.png')}}" alt="logo" class="desktop-logo"> <img src="{{asset('assets/images/brand-logos/desktop-dark.png" alt="logo')}}" class="desktop-dark">  -->
-                        <h3 style="font-weight: bold;">STORE KEEP</h3>
+                        <h3 style="font-weight: bold;">STORE KIPPA</h3>
                     </a> 
                 </div>
                 @if(Session::has('fail'))
@@ -42,13 +42,16 @@
                 @if(Session::has('success'))
                     <p class="alert {{ Session::get('alert-class', 'alert-success') }}" style="color: red; text-align: center;">{{ Session::get('success') }}</p>
                 @endif
-                <form action="{{ route('login') }}" method="post">
-                    @csrf
+            
+                <div class="card custom-card">
+                    <div class="card-body p-5">
+                        <p class="h5 fw-semibold mb-2 text-center">Login</p>
+                        <p class="mb-4 text-muted op-7 fw-normal text-center">Enter your Username and Password to Login</p>
 
-                    <div class="card custom-card">
-                        <div class="card-body p-5">
-                            <p class="h5 fw-semibold mb-2 text-center">Sign Up</p>
-                            <p class="mb-4 text-muted op-7 fw-normal text-center">Welcome To Store Keeper</p>
+                        <form method="post" action="{{ route('admin.login')}} ">
+
+                            @csrf
+
                             <div class="row gy-3">
                                 <div class="col-xl-12"> 
                                     <label for="signup-username" class="form-label text-default">User Name</label> 
@@ -75,12 +78,13 @@
                                     @enderror
                                 </div>
                                 
-                                <div class="col-xl-12 d-grid mt-2"> <button class="btn btn-lg btn-primary" style="font-weight: bold;">LOGIN</button> </div>
+                                <div class="col-xl-12 d-grid mt-4"> <button class="btn btn-lg btn-primary" type="submit" style="font-weight: bold;">LOGIN</button> </div>
                             </div>
-                            
-                        </div>
+
+                        </form>
+                        
                     </div>
-                </form>            
+                </div>
                 
             </div>
         </div>
